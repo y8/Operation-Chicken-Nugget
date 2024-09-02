@@ -15,7 +15,7 @@ ck = client.new_consumer_key_request()
 ck.add_recursive_rules(ovh.API_READ_WRITE, "/")
 
 # Request token
-validation = ck.request()
+validation = ck.request(allowedIPs=["0.0.0.0/0"])
 
 print("Please visit %s to authenticate" % validation['validationUrl'])
 input("and press Enter to continue...")
