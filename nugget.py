@@ -83,7 +83,11 @@ for day in range(4):
         now = datetime.now()
         print(f'Run {check+1} {now.strftime("%H:%M:%S")}')
         #wait for stock
-        response = requests.get('https://us.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities?excludeDatacenters=false&planCode=24ska01&server=24ska01')
+        try:
+            response = requests.get('https://us.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities?excludeDatacenters=false&planCode=24ska01&server=24ska01')
+        except:
+            time.sleep(2)
+            continue
         if response.status_code == 200:
             stock = response.json()
             score = 0
