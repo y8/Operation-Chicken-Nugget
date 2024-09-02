@@ -97,22 +97,22 @@ for day in range(4):
             time.sleep(randint(5,10))
             continue
         #lets checkout boooyaaa
-    if score >= 1:
-        #autopay should be set to true if you want automatic delivery, otherwise it will just generate a invoice
-        payload={'autoPayWithPreferredPaymentMethod':False,'waiveRetractationPeriod':False}
-        #prepare sig
-        target = f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/checkout"
-        now = str(int(time.time()) + timeDelta)
-        signature = hashlib.sha1()
-        signature.update("+".join([config['application_secret'], config['consumer_key'],'POST', target, json.dumps(payload), now]).encode('utf-8'))
-        headers['X-Ovh-Signature'] = "$1$" + signature.hexdigest()
-        headers['X-Ovh-Timestamp'] = now
-        response = requests.post(target, headers=headers, data=json.dumps(payload))
-        if response.status_code == 200:
-            print(response.status_code)
-            print(json.dumps(response.json(), indent=4))
-            exit("Done")
-        else:
-            print("Got non 200 response code on checkout, retrying")
-            continue
-        time.sleep(10)
+        if score >= 1:
+            #autopay should be set to true if you want automatic delivery, otherwise it will just generate a invoice
+            payload={'autoPayWithPreferredPaymentMethod':False,'waiveRetractationPeriod':False}
+            #prepare sig
+            target = f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/checkout"
+            now = str(int(time.time()) + timeDelta)
+            signature = hashlib.sha1()
+            signature.update("+".join([config['application_secret'], config['consumer_key'],'POST', target, json.dumps(payload), now]).encode('utf-8'))
+            headers['X-Ovh-Signature'] = "$1$" + signature.hexdigest()
+            headers['X-Ovh-Timestamp'] = now
+            response = requests.post(target, headers=headers, data=json.dumps(payload))
+            if response.status_code == 200:
+                print(response.status_code)
+                print(json.dumps(response.json(), indent=4))
+                exit("Done")
+            else:
+                print("Got non 200 response code on checkout, retrying")
+                continue
+            time.sleep(10)
