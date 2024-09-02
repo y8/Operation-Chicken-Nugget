@@ -29,9 +29,7 @@ else:
     print(json.dumps(response.json(), indent=4))
     exit()
 timeDelta = int(response.text) - int(time.time())
-#run for 8 days
-for day in range(4):
-    print(f'Day {day}')
+while True:
     # creating a new cart
     cart = client.post("/order/cart", ovhSubsidiary=config['ovhSubsidiary'], _need_auth=False)
     #assign new cart to current user
@@ -78,8 +76,8 @@ for day in range(4):
             print(json.dumps(response.json(), indent=4))
             exit()
     print("Package ready, waiting for stock")
-    #the order expires in about 3 days, we create a new one after 2 days
-    for check in range(17280):
+    #the order expires after about 1 day
+    for check in range(86000):
         now = datetime.now()
         print(f'Run {check+1} {now.strftime("%H:%M:%S")}')
         #wait for stock
