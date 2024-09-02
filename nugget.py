@@ -88,19 +88,12 @@ for day in range(4):
             stock = response.json()
             score = 0
             for datacenter in stock[0]['datacenters']:
-                #if datacenter['availability'] != "unavailable": score = score +1
-                if datacenter['datacenter'] == "rbx":
-                    print(f'RBX {datacenter["availability"]}')
-                    if datacenter['availability'] != "unavailable": score = score +1
-                if datacenter['datacenter'] == "gra":
-                    print(f'GRA {datacenter["availability"]}')
-                    if datacenter['availability'] == "unavailable": score = score +1
+                if datacenter['availability'] != "unavailable": score = score +1
         else:
             time.sleep(randint(5,10))
             continue
         #lets checkout boooyaaa
-        #if score >= 1:
-        if score == 2:
+    if score >= 1
             #autopay should be set to true if you want automatic delivery, otherwise it will just generate a invoice
             payload={'autoPayWithPreferredPaymentMethod':False,'waiveRetractationPeriod':False}
             #prepare sig
