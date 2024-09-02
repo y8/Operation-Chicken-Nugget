@@ -116,3 +116,5 @@ for day in range(4):
                 print("Got non 200 response code on checkout, retrying")
                 continue
             time.sleep(10)
+        else:
+            time.sleep(1)
