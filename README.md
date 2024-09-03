@@ -1,6 +1,6 @@
 # Operation-Chicken-Nugget
 
-Goal of this Operation is, grabbing a KS1 in Roubaix.<br />
+Goal of this Operation is, grabbing a KS-A in BHS.<br />
 **Don't run this on a VPS, you will get flagged for Fraud**<br />
 **Make sure you configure it correctly, otherwise you end up getting a 500**
 
@@ -32,7 +32,6 @@ Example how config.json should look like by now <br />
 
 2. Request the consumerKey with running consumerKey.py and put it into config.json <br />
 
-3. Edit nugget.py if you want to, by default it does no autopay and only in RBX<br />
-If you want GRA, uncomment a few lines.<br />
+3. Edit nugget.py if you want to, by default it does no autopay<br />
 
 4. Profit! <br />
