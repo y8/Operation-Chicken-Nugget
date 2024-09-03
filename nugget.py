@@ -30,7 +30,14 @@ else:
     exit()
 
 timeDelta = int(response.text) - int(time.time())
+availableDataCenter = "bhs"
 retry = 0
+
+def datacenterToRegion(availableDataCenter):
+    if availableDataCenter == "bhs": 
+        return "canada"
+    else:
+        return "europe"
 
 while True:
     # creating a new cart
@@ -93,7 +100,9 @@ while True:
             stock = response.json()
             score = 0
             for datacenter in stock[0]['datacenters']:
-                if datacenter['availability'] != "unavailable": score = score +1
+                if datacenter['availability'] != "unavailable":
+                    availableDataCenter = datacenter['datacenter'] 
+                    score = score +1
         else:
             time.sleep(randint(5,10))
             continue
@@ -117,7 +126,11 @@ while True:
                 print("Got non 200 response code on checkout, retrying")
                 retry += 1
                 if retry > 10: exit()
-                if retry == 5: break
+                if retry == 5:
+                    print(f"Switching Region to {datacenterToRegion(availableDataCenter)} and datacenter to {availableDataCenter}") 
+                    config['dedicated_datacenter'] = availableDataCenter
+                    config['region'] = datacenterToRegion(availableDataCenter)
+                    break
             time.sleep(5)
         else:
             time.sleep(1)
