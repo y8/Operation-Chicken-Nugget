@@ -28,7 +28,10 @@ else:
     print(response.status_code)
     print(json.dumps(response.json(), indent=4))
     exit()
+
 timeDelta = int(response.text) - int(time.time())
+retry = 0
+
 while True:
     # creating a new cart
     cart = client.post("/order/cart", ovhSubsidiary=config['ovhSubsidiary'], _need_auth=False)
@@ -112,7 +115,9 @@ while True:
                 exit("Done")
             else:
                 print("Got non 200 response code on checkout, retrying")
-                continue
-            time.sleep(10)
+                retry += 1
+                if retry > 10: exit()
+                if retry == 5: break
+            time.sleep(5)
         else:
             time.sleep(1)

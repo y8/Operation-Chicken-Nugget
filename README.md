@@ -2,6 +2,7 @@
 
 Goal of this Operation is, grabbing a KS1 in Roubaix.<br />
 **Don't run this on a VPS, you will get flagged for Fraud**
+**Make sure you configure it correctly, otherwise you end up getting a 500**
 
 **Dependencies**<br />
 
