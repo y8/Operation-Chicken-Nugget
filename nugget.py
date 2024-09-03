@@ -77,7 +77,7 @@ while True:
             exit()
     print("Package ready, waiting for stock")
     #the order expires after about 1 day
-    for check in range(86000):
+    for check in range(80000):
         now = datetime.now()
         print(f'Run {check+1} {now.strftime("%H:%M:%S")}')
         #wait for stock
