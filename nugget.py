@@ -25,64 +25,56 @@ def datacenterToRegion(availableDataCenter):
     else:
         return "europe"
 
+def call(url,payload=None,runs=10):
+    for run in range(runs):
+        try:
+            if payload:
+                response = requests.post(url, headers=headers, data=json.dumps(payload))
+            else:
+                response = requests.get(url, headers=headers)
+            if response.status_code == 200: return response
+            print(f"Got {response.status_code} for {url} retrying...")
+            print(json.dumps(response.json(), indent=4))
+        except:
+            pass
+        time.sleep(5)
+    exit(f"Unable to fetch {url}")
+
 while True:
     headers = {'Accept': 'application/json','X-Ovh-Application':config['application_key'],'X-Ovh-Consumer':config['consumer_key'],
     'Content-Type':'application/json;charset=utf-8','Host':config['endpointAPI']}
     print("Preparing Package")
     #getting current time
-    response = requests.get(f"https://{config['endpointAPI']}/1.0/auth/time", headers=headers)
-    if response.status_code == 200:
-        print("Getting Time")
-    else:
-        print(response.status_code)
-        print(json.dumps(response.json(), indent=4))
-        exit()
+    print("Getting Time")
+    response = call(f"https://{config['endpointAPI']}/1.0/auth/time")
     timeDelta = int(response.text) - int(time.time())
     # creating a new cart
     cart = client.post("/order/cart", ovhSubsidiary=config['ovhSubsidiary'], _need_auth=False)
     #assign new cart to current user
     client.post("/order/cart/{0}/assign".format(cart.get("cartId")))
-    #put ks1 into cart
+    #putting KS-A into cart
     #result = client.post(f'/order/cart/{cart.get("cartId")}/eco',{"duration":"P1M","planCode":"22sk010","pricingMode":"default","quantity":1})
     #apparently this shit sends malformed json whatever baguette
-    payload={'duration':'P1M','planCode':'24ska01','pricingMode':'default','quantity':1}
-    response = requests.post(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco", headers=headers, data=json.dumps(payload))
-    if response.status_code != 200:
-        print(response.status_code)
-        print(json.dumps(response.json(), indent=4))
-        exit()
+    payload = {'duration':'P1M','planCode':'24ska01','pricingMode':'default','quantity':1}
+    call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco", payload)
     #getting current cart
-    response = requests.get(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}")
-    if response.status_code != 200:
-        print(response.status_code)
-        print(json.dumps(response.json(), indent=4))
-        exit()
+    response = call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}")
     #modify item for checkout
     itemID = response.json()['items'][0]
     print(f'Getting current cart {cart.get("cartId")}')
     #set configurations
     configurations = [{'label':'region','value':config['region']},{'label':'dedicated_datacenter','value':config['dedicated_datacenter']},{'label':'dedicated_os','value':'none_64.en'}]
     for entry in configurations:
-        response = requests.post(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/item/{itemID}/configuration", headers=headers, data=json.dumps(entry))
-        if response.status_code == 200:
-            print(f"Setting {entry}")
-        else:
-            print(response.status_code)
-            print(json.dumps(response.json(), indent=4))
-            exit()
+        print(f"Setting {entry}")
+        call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/item/{itemID}/configuration",entry)
     #set options
     options = [{'itemId':itemID,'duration':'P1M','planCode':'bandwidth-100-24sk','pricingMode':'default','quantity':1},
             {'itemId':itemID,'duration':'P1M','planCode':'softraid-1x480ssd-24ska01','pricingMode':'default','quantity':1},
             {'itemId':itemID,'duration':'P1M','planCode':'ram-64g-noecc-2133-24ska01','pricingMode':'default','quantity':1}
     ]
     for option in options:
-        response = requests.post(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco/options", headers=headers, data=json.dumps(option))
-        if response.status_code == 200:
-            print(f"Setting {option}")
-        else:
-            print(response.status_code)
-            print(json.dumps(response.json(), indent=4))
-            exit()
+        print(f"Setting {option}")
+        call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco/options", option)
     print("Package ready, waiting for stock")
     #the order expires after about 1 day
     for check in range(80000):
