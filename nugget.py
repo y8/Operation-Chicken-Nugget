@@ -16,20 +16,6 @@ client = ovh.Client(
 
 # Print nice welcome message
 print("Welcome", client.get('/me')['firstname'])
-
-headers = {'Accept': 'application/json','X-Ovh-Application':config['application_key'],'X-Ovh-Consumer':config['consumer_key'],
-'Content-Type':'application/json;charset=utf-8','Host':config['endpointAPI']}
-print("Preparing Package")
-#getting current time
-response = requests.get(f"https://{config['endpointAPI']}/1.0/auth/time", headers=headers)
-if response.status_code == 200:
-    print("Getting Time")
-else:
-    print(response.status_code)
-    print(json.dumps(response.json(), indent=4))
-    exit()
-
-timeDelta = int(response.text) - int(time.time())
 availableDataCenter = "bhs"
 retry = 0
 
@@ -40,6 +26,18 @@ def datacenterToRegion(availableDataCenter):
         return "europe"
 
 while True:
+    headers = {'Accept': 'application/json','X-Ovh-Application':config['application_key'],'X-Ovh-Consumer':config['consumer_key'],
+    'Content-Type':'application/json;charset=utf-8','Host':config['endpointAPI']}
+    print("Preparing Package")
+    #getting current time
+    response = requests.get(f"https://{config['endpointAPI']}/1.0/auth/time", headers=headers)
+    if response.status_code == 200:
+        print("Getting Time")
+    else:
+        print(response.status_code)
+        print(json.dumps(response.json(), indent=4))
+        exit()
+    timeDelta = int(response.text) - int(time.time())
     # creating a new cart
     cart = client.post("/order/cart", ovhSubsidiary=config['ovhSubsidiary'], _need_auth=False)
     #assign new cart to current user
