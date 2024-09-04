@@ -115,6 +115,7 @@ while True:
                     exit("Done")
                 else:
                     print("Got non 200 response code on checkout, retrying")
+                    print(json.dumps(response.json(), indent=4))
                     retry += 1
                     if retry > 15: exit()
                     if retry == 5 or retry == 10:
