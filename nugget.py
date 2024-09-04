@@ -107,20 +107,25 @@ while True:
             signature.update("+".join([config['application_secret'], config['consumer_key'],'POST', target, json.dumps(payload), now]).encode('utf-8'))
             headers['X-Ovh-Signature'] = "$1$" + signature.hexdigest()
             headers['X-Ovh-Timestamp'] = now
-            response = requests.post(target, headers=headers, data=json.dumps(payload))
-            if response.status_code == 200:
-                print(response.status_code)
-                print(json.dumps(response.json(), indent=4))
-                exit("Done")
-            else:
-                print("Got non 200 response code on checkout, retrying")
+            try:
+                response = requests.post(target, headers=headers, data=json.dumps(payload))
+                if response.status_code == 200:
+                    print(response.status_code)
+                    print(json.dumps(response.json(), indent=4))
+                    exit("Done")
+                else:
+                    print("Got non 200 response code on checkout, retrying")
+                    retry += 1
+                    if retry > 15: exit()
+                    if retry == 5 or retry == 10:
+                        print(f"Switching Region to {datacenterToRegion(availableDataCenter)} and datacenter to {availableDataCenter}") 
+                        config['dedicated_datacenter'] = availableDataCenter
+                        config['region'] = datacenterToRegion(availableDataCenter)
+                        break
+            except Exception as e:
+                print(f"Unable to submit order got '{e}' as error")
                 retry += 1
-                if retry > 10: exit()
-                if retry == 5:
-                    print(f"Switching Region to {datacenterToRegion(availableDataCenter)} and datacenter to {availableDataCenter}") 
-                    config['dedicated_datacenter'] = availableDataCenter
-                    config['region'] = datacenterToRegion(availableDataCenter)
-                    break
-            time.sleep(5)
+                if retry > 15: exit()
+            time.sleep(2)
         else:
             time.sleep(1)
