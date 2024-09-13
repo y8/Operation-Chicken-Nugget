@@ -83,7 +83,8 @@ while True:
         #wait for stock
         try:
             response = requests.get('https://us.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities?excludeDatacenters=false&planCode=24ska01&server=24ska01')
-        except:
+        except Exception as e:
+            print(f"Failed to fetch stock got error '{e}' retrying...")
             time.sleep(2)
             continue
         if response.status_code == 200:
