@@ -35,8 +35,8 @@ def call(url,payload=None,runs=10):
             if response.status_code == 200: return response
             print(f"Got {response.status_code} for {url} retrying...")
             print(json.dumps(response.json(), indent=4))
-        except:
-            pass
+        except Exception as e:
+            print(f"Failed to fetch {url} got error '{e}' retrying...")
         time.sleep(5)
     exit(f"Unable to fetch {url}")
 
