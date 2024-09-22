@@ -26,12 +26,13 @@ Example how config.json should look like by now <br />
     "application_secret":"xxxxxxxxxxxxxxxxxx",
     "dedicated_datacenter":"fr",
     "region":"europe",
-    "consumer_key":""
+    "consumer_key":"",
+    "autoPay":false
 }
 ```
 
 2. Request the consumerKey with running consumerKey.py and put it into config.json <br />
 
-3. Edit nugget.py if you want to, by default it does no autopay<br />
+3. Edit nugget.py if you want to, by default no autopay, has to be enabled manually.<br />
 
 4. Profit! <br />
