@@ -79,7 +79,7 @@ while True:
         call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco/options", option)
     print("Package ready, waiting for stock")
     #the order expires after about 1 day
-    for check in range(80000):
+    for check in range(70000):
         now = datetime.now()
         print(f'Run {check+1} {now.strftime("%H:%M:%S")}')
         #wait for stock
