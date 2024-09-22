@@ -121,7 +121,7 @@ while True:
                     print(json.dumps(response.json(), indent=4))
                     retry += 1
                     if retry > 15: exit()
-                    if retry == 5 or retry == 10:
+                    if retry % 4 == 0:
                         print(f"Switching Region to {datacenterToRegion(availableDataCenter)} and datacenter to {availableDataCenter}") 
                         config['dedicated_datacenter'] = availableDataCenter
                         config['region'] = datacenterToRegion(availableDataCenter)
