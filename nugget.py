@@ -5,6 +5,8 @@ from random import randint
 with open('config.json') as f:
     config = json.load(f)
 
+if not "autoPay" in config: exit("autoPay missing in config.")
+
 # Instantiate. Visit https://api.ovh.com/createToken/?GET=/me
 # to get your credentials
 client = ovh.Client(
@@ -100,7 +102,7 @@ while True:
         #lets checkout boooyaaa
         if score >= 1:
             #autopay should be set to true if you want automatic delivery, otherwise it will just generate a invoice
-            payload={'autoPayWithPreferredPaymentMethod':False,'waiveRetractationPeriod':False}
+            payload={'autoPayWithPreferredPaymentMethod':config['autoPay'],'waiveRetractationPeriod':config['autoPay']}
             #prepare sig
             target = f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/checkout"
             now = str(int(time.time()) + timeDelta)
