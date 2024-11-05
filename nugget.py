@@ -7,6 +7,38 @@ with open('config.json') as f:
 
 if not "autoPay" in config: exit("autoPay missing in config.")
 
+print("Loading catalog, please standby")
+endpoint = "ca.api.ovh.com"
+response = requests.get(f'https://{endpoint}/1.0/order/catalog/public/eco?ovhSubsidiary=WE')
+catalog = response.json()
+catalogSorted = {}
+for plan in catalog['plans']:
+    for price in plan['pricings']:
+        if "installation" in price['capacities']: continue
+        if price['interval'] != 1: continue
+        catalogSorted[price['price']] = plan
+
+newlist = dict(sorted(catalogSorted.items(), key=lambda item: item[0]))
+
+print("What plan do you want to buy? e.g KS-LE-B")
+lookup = input()
+planConfig = {}
+for price,offer in newlist.items():
+    if "product" in offer and offer['invoiceName'] == lookup:
+        #print(offer)
+        planConfig['planCode'] = offer['planCode']
+        for addon in offer['addonFamilies']:
+            if addon['mandatory'] != True: continue
+            for index, option in enumerate(addon['addons']):
+                print(index, option)
+            print("Please select configuration")
+            selected = input()
+            for index, option in enumerate(addon['addons']):
+                if int(selected) == index: planConfig[addon['name']] = option
+
+print("Your selected config is")
+print(planConfig)
+
 # Instantiate. Visit https://api.ovh.com/createToken/?GET=/me
 # to get your credentials
 client = ovh.Client(
@@ -57,7 +89,7 @@ while True:
     #putting KS-A into cart
     #result = client.post(f'/order/cart/{cart.get("cartId")}/eco',{"duration":"P1M","planCode":"22sk010","pricingMode":"default","quantity":1})
     #apparently this shit sends malformed json whatever baguette
-    payload = {'duration':'P1M','planCode':'24ska01','pricingMode':'default','quantity':1}
+    payload = {'duration':'P1M','planCode':planConfig['planCode'],'pricingMode':'default','quantity':1}
     call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco", payload)
     #getting current cart
     response = call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}")
@@ -70,9 +102,9 @@ while True:
         print(f"Setting {entry}")
         call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/item/{itemID}/configuration",entry)
     #set options
-    options = [{'itemId':itemID,'duration':'P1M','planCode':'bandwidth-100-24sk','pricingMode':'default','quantity':1},
-            {'itemId':itemID,'duration':'P1M','planCode':'softraid-1x480ssd-24ska01','pricingMode':'default','quantity':1},
-            {'itemId':itemID,'duration':'P1M','planCode':'ram-64g-noecc-2133-24ska01','pricingMode':'default','quantity':1}
+    options = [{'itemId':itemID,'duration':'P1M','planCode':planConfig['bandwidth'],'pricingMode':'default','quantity':1},
+            {'itemId':itemID,'duration':'P1M','planCode':planConfig['storage'],'pricingMode':'default','quantity':1},
+            {'itemId':itemID,'duration':'P1M','planCode':planConfig['memory'],'pricingMode':'default','quantity':1}
     ]
     for option in options:
         print(f"Setting {option}")
@@ -84,7 +116,7 @@ while True:
         print(f'Run {check+1} {now.strftime("%H:%M:%S")}')
         #wait for stock
         try:
-            response = requests.get('https://us.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities?excludeDatacenters=false&planCode=24ska01&server=24ska01')
+            response = requests.get(f'https://us.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities?excludeDatacenters=false&planCode={planConfig['planCode']}&server={planConfig['planCode']}')
         except Exception as e:
             print(f"Failed to fetch stock got error '{e}' retrying...")
             time.sleep(2)
