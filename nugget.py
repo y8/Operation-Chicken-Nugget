@@ -116,7 +116,7 @@ while True:
         print(f'Run {check+1} {now.strftime("%H:%M:%S")}')
         #wait for stock
         try:
-            response = requests.get(f'https://us.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities?excludeDatacenters=false&planCode={planConfig['planCode']}&server={planConfig['planCode']}')
+            response = requests.get(f'https://us.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities?excludeDatacenters=false&planCode={planConfig["planCode"]}&server={planConfig["planCode"]}')
         except Exception as e:
             print(f"Failed to fetch stock got error '{e}' retrying...")
             time.sleep(2)
