@@ -7,6 +7,7 @@ with open('config.json') as f:
 
 if not "autoPay" in config: exit("autoPay missing in config.")
 if not "switchRegion" in config: exit("switchRegion missing in config.")
+if not "anyDatacenter" in config: exit("anyDatacenter missing in config.")
 
 print("Loading catalog, please standby")
 endpoint = "ca.api.ovh.com"
@@ -126,7 +127,10 @@ while True:
             stock = response.json()
             score = 0
             for datacenter in stock[0]['datacenters']:
-                if datacenter['availability'] != "unavailable":
+                if datacenter['availability'] != "unavailable" and config['anyDatacenter']:
+                    availableDataCenter = datacenter['datacenter'] 
+                    score = score +1
+                elif datacenter['availability'] != "unavailable" and datacenter['datacenter'] == config['dedicated_datacenter']:
                     availableDataCenter = datacenter['datacenter'] 
                     score = score +1
         else:

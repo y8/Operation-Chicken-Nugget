@@ -7,6 +7,7 @@
     "dedicated_datacenter":"",
     "region":"",
     "consumer_key":"",
-    "switchRegion":true,
+    "switchRegion":false,
+    "anyDatacenter":false,
     "autoPay":false
 }
