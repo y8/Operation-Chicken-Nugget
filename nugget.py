@@ -6,6 +6,7 @@ with open('config.json') as f:
     config = json.load(f)
 
 if not "autoPay" in config: exit("autoPay missing in config.")
+if not "switchRegion" in config: exit("switchRegion missing in config.")
 
 print("Loading catalog, please standby")
 endpoint = "ca.api.ovh.com"
@@ -153,7 +154,7 @@ while True:
                     print(json.dumps(response.json(), indent=4))
                     retry += 1
                     if retry > 15: exit()
-                    if retry % 4 == 0:
+                    if retry % 4 == 0 and config['switchRegion']:
                         print(f"Switching Region to {datacenterToRegion(availableDataCenter)} and datacenter to {availableDataCenter}") 
                         config['dedicated_datacenter'] = availableDataCenter
                         config['region'] = datacenterToRegion(availableDataCenter)
