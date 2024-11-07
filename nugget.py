@@ -28,24 +28,28 @@ for plan in catalog['plans']:
 
 newlist = dict(sorted(catalogSorted.items(), key=lambda item: item[0]))
 
-print("What plan do you want to buy? e.g KS-LE-B")
+for index, (price,offer) in enumerate(newlist.items()):
+    if not "product" in offer: continue
+    print(index, offer['invoiceName'])
+print("What plan do you want to buy? e.g 1 for KS-LE-B")
+
 lookup = input()
 planConfig = {}
-for price,offer in newlist.items():
-    if "product" in offer and offer['invoiceName'] == lookup:
-        #print(offer)
+for offerIndex, (price,offer) in enumerate(newlist.items()):
+    if "product" in offer and offerIndex == int(lookup):
         planConfig['planCode'] = offer['planCode']
         for addon in offer['addonFamilies']:
             if addon['mandatory'] != True: continue
-            for index, option in enumerate(addon['addons']):
-                print(index, option)
+            for index, option in enumerate(addon['addons']): print(index, option)
             print("Please select configuration")
             selected = input()
             for index, option in enumerate(addon['addons']):
                 if int(selected) == index: planConfig[addon['name']] = option
+        break
 
 print("Your selected config is")
 print(planConfig)
+time.sleep(2)
 
 # Instantiate. Visit https://api.ovh.com/createToken/?GET=/me
 # to get your credentials
