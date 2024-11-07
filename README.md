@@ -20,7 +20,6 @@ Example how config.json should look like by now <br />
 ```
 {
     "endpoint":"ovh-ca",
-    "endpointAPI":"ca.api.ovh.com",
     "ovhSubsidiary":"CA",
     "application_key":"xxxxxxxxxx",
     "application_secret":"xxxxxxxxxxxxxxxxxx",

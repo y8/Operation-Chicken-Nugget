@@ -13,10 +13,12 @@ print("Please select the endpoint for the catalog")
 for index, option in enumerate(endpoints): print(index, option)
 selected = input("Endpoint: ")
 for index, option in enumerate(endpoints):
-    if int(selected) == index: catalogEndpoint = endpoints[option]['catalog']
+    if int(selected) == index: 
+        selectedEndpoint = endpoints[option]
+        selectedEndpoint['endpointAPI'] = option
 
-print(f"Loading catalog from {catalogEndpoint}")
-response = requests.get(catalogEndpoint)
+print(f"Loading catalog from {selectedEndpoint['catalog']}")
+response = requests.get(selectedEndpoint['catalog'])
 catalog = response.json()
 catalogSorted = {}
 for plan in catalog['plans']:
@@ -87,11 +89,11 @@ def call(url,payload=None,runs=10):
 
 while True:
     headers = {'Accept': 'application/json','X-Ovh-Application':config['application_key'],'X-Ovh-Consumer':config['consumer_key'],
-    'Content-Type':'application/json;charset=utf-8','Host':config['endpointAPI']}
+    'Content-Type':'application/json;charset=utf-8','Host':selectedEndpoint['endpointAPI']}
     print("Preparing Package")
     #getting current time
     print("Getting Time")
-    response = call(f"https://{config['endpointAPI']}/1.0/auth/time")
+    response = call(f"https://{selectedEndpoint['endpointAPI']}/1.0/auth/time")
     timeDelta = int(response.text) - int(time.time())
     # creating a new cart
     cart = client.post("/order/cart", ovhSubsidiary=config['ovhSubsidiary'], _need_auth=False)
@@ -101,9 +103,9 @@ while True:
     #result = client.post(f'/order/cart/{cart.get("cartId")}/eco',{"duration":"P1M","planCode":"22sk010","pricingMode":"default","quantity":1})
     #apparently this shit sends malformed json whatever baguette
     payload = {'duration':'P1M','planCode':planConfig['planCode'],'pricingMode':'default','quantity':1}
-    call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco", payload)
+    call(f"https://{selectedEndpoint['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco", payload)
     #getting current cart
-    response = call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}")
+    response = call(f"https://{selectedEndpoint['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}")
     #modify item for checkout
     itemID = response.json()['items'][0]
     print(f'Getting current cart {cart.get("cartId")}')
@@ -111,7 +113,7 @@ while True:
     configurations = [{'label':'region','value':config['region']},{'label':'dedicated_datacenter','value':config['dedicated_datacenter']},{'label':'dedicated_os','value':'none_64.en'}]
     for entry in configurations:
         print(f"Setting {entry}")
-        call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/item/{itemID}/configuration",entry)
+        call(f"https://{selectedEndpoint['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/item/{itemID}/configuration",entry)
     #set options
     options = [{'itemId':itemID,'duration':'P1M','planCode':planConfig['bandwidth'],'pricingMode':'default','quantity':1},
             {'itemId':itemID,'duration':'P1M','planCode':planConfig['storage'],'pricingMode':'default','quantity':1},
@@ -119,7 +121,7 @@ while True:
     ]
     for option in options:
         print(f"Setting {option}")
-        call(f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco/options", option)
+        call(f"https://{selectedEndpoint['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/eco/options", option)
     print("Package ready, waiting for stock")
     #the order expires after about 1 day
     for check in range(70000):
@@ -152,7 +154,7 @@ while True:
             #autopay should be set to true if you want automatic delivery, otherwise it will just generate a invoice
             payload={'autoPayWithPreferredPaymentMethod':config['autoPay'],'waiveRetractationPeriod':config['autoPay']}
             #prepare sig
-            target = f"https://{config['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/checkout"
+            target = f"https://{selectedEndpoint['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/checkout"
             now = str(int(time.time()) + timeDelta)
             signature = hashlib.sha1()
             signature.update("+".join([config['application_secret'], config['consumer_key'],'POST', target, json.dumps(payload), now]).encode('utf-8'))
