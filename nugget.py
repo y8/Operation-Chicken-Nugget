@@ -130,9 +130,11 @@ while True:
                 if datacenter['availability'] != "unavailable" and config['anyDatacenter']:
                     availableDataCenter = datacenter['datacenter'] 
                     score = score +1
+                    break
                 elif datacenter['availability'] != "unavailable" and datacenter['datacenter'] == config['dedicated_datacenter']:
                     availableDataCenter = datacenter['datacenter'] 
                     score = score +1
+                    break
         else:
             time.sleep(randint(5,10))
             continue
