@@ -27,6 +27,8 @@ Example how config.json should look like by now <br />
     "dedicated_datacenter":"fr",
     "region":"europe",
     "consumer_key":"",
+    "switchRegion":false,
+    "anyDatacenter":false,
     "autoPay":false
 }
 ```
