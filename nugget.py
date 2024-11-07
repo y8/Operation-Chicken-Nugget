@@ -55,7 +55,7 @@ time.sleep(2)
 # Instantiate. Visit https://api.ovh.com/createToken/?GET=/me
 # to get your credentials
 client = ovh.Client(
-    endpoint=config['endpoint'],
+    endpoint=selectedEndpoint['endpoint'],
     application_key=config['application_key'],
     application_secret=config['application_secret'],
     consumer_key=config['consumer_key'],
