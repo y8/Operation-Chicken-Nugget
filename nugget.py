@@ -9,9 +9,15 @@ if not "autoPay" in config: exit("autoPay missing in config.")
 if not "switchRegion" in config: exit("switchRegion missing in config.")
 if not "anyDatacenter" in config: exit("anyDatacenter missing in config.")
 
-print("Loading catalog, please standby")
-endpoint = "ca.api.ovh.com"
-response = requests.get(f'https://{endpoint}/1.0/order/catalog/public/eco?ovhSubsidiary=WE')
+endpoints = ['https://ca.api.ovh.com/1.0/order/catalog/public/eco?ovhSubsidiary=CA','https://eu.api.ovh.com/1.0/order/catalog/public/eco?ovhSubsidiary=IE']
+print("Please select the endpoint for the catalog")
+for index, option in enumerate(endpoints): print(index, option)
+selected = input("Endpoint: ")
+for index, option in enumerate(endpoints):
+    if int(selected) == index: endpoint = option
+
+print(f"Loading catalog from {endpoint}")
+response = requests.get(endpoint)
 catalog = response.json()
 catalogSorted = {}
 for plan in catalog['plans']:
