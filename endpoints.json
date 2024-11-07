@@ -1,0 +1,8 @@
+{
+ "ca.api.ovh.com": {
+    "catalog":"https://ca.api.ovh.com/1.0/order/catalog/public/eco?ovhSubsidiary=CA"
+ },
+ "eu.api.ovh.com": {
+    "catalog":"https://eu.api.ovh.com/1.0/order/catalog/public/eco?ovhSubsidiary=IE"
+ }
+}

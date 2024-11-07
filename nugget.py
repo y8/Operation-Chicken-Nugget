@@ -2,22 +2,21 @@ import requests, hashlib, json, time, ovh
 from datetime import datetime
 from random import randint
 
-with open('config.json') as f:
-    config = json.load(f)
+with open('config.json') as f: config = json.load(f)
+with open('endpoints.json') as f: endpoints = json.load(f)
 
 if not "autoPay" in config: exit("autoPay missing in config.")
 if not "switchRegion" in config: exit("switchRegion missing in config.")
 if not "anyDatacenter" in config: exit("anyDatacenter missing in config.")
 
-endpoints = ['https://ca.api.ovh.com/1.0/order/catalog/public/eco?ovhSubsidiary=CA','https://eu.api.ovh.com/1.0/order/catalog/public/eco?ovhSubsidiary=IE']
 print("Please select the endpoint for the catalog")
 for index, option in enumerate(endpoints): print(index, option)
 selected = input("Endpoint: ")
 for index, option in enumerate(endpoints):
-    if int(selected) == index: endpoint = option
+    if int(selected) == index: catalogEndpoint = endpoints[option]['catalog']
 
-print(f"Loading catalog from {endpoint}")
-response = requests.get(endpoint)
+print(f"Loading catalog from {catalogEndpoint}")
+response = requests.get(catalogEndpoint)
 catalog = response.json()
 catalogSorted = {}
 for plan in catalog['plans']:
