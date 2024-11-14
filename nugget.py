@@ -16,6 +16,7 @@ for index, option in enumerate(endpoints):
     if int(selected) == index: 
         selectedEndpoint = endpoints[option]
         selectedEndpoint['endpointAPI'] = option
+        break
 
 print(f"Loading catalog from {selectedEndpoint['catalog']}")
 response = requests.get(selectedEndpoint['catalog'])
