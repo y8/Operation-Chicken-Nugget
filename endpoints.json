@@ -1,12 +1,12 @@
 {
  "ca.api.ovh.com": {
     "catalog":"https://ca.api.ovh.com/1.0/order/catalog/public/eco?ovhSubsidiary=CA",
-    "availability":"https://us.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities",
+    "availability":"https://ca.api.ovh.com/v1/dedicated/server/datacenter/availabilities",
     "endpoint":"ovh-ca"
  },
  "eu.api.ovh.com": {
     "catalog":"https://eu.api.ovh.com/1.0/order/catalog/public/eco?ovhSubsidiary=IE",
-    "availability":"https://eu.ovh.com/engine/apiv6/dedicated/server/datacenter/availabilities",
+    "availability":"https://eu.api.ovh.com/v1/dedicated/server/datacenter/availabilities",
     "endpoint":"ovh-eu"
  }
 }
