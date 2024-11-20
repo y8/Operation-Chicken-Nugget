@@ -39,26 +39,26 @@ headers = {'Accept': 'application/json','X-Ovh-Application':config['application_
 print(f"Loading catalog from {selectedEndpoint['catalog']}")
 response = call(selectedEndpoint['catalog'])
 catalog = response.json()
-catalogSorted = {}
+catalogUnsorted = {}
 for plan in catalog['plans']:
     for price in plan['pricings']:
         if "installation" in price['capacities']: continue
         if price['interval'] != 1: continue
-        catalogSorted[price['price']] = plan
+        catalogUnsorted[plan['planCode']] = {"price":int(price['price']),"plan":plan}
 
-newlist = dict(sorted(catalogSorted.items(), key=lambda item: item[0]))
+catalogSorted = dict(sorted(catalogUnsorted.items(), key=lambda item: item[1]["price"]))
 
-for index, (price,offer) in enumerate(newlist.items()):
-    if not "product" in offer: continue
-    print(index, offer['invoiceName'])
-print("What plan do you want to buy? e.g 1 for KS-LE-B")
+for index, (planCode,data) in enumerate(catalogSorted.items()):
+    if not "product" in data['plan']: continue
+    print(index, data['plan']['invoiceName'])
+print("What plan do you want to buy? e.g 2 for KS-LE-B")
 
 lookup = input()
 planConfig = {}
-for offerIndex, (price,offer) in enumerate(newlist.items()):
-    if "product" in offer and offerIndex == int(lookup):
-        planConfig['planCode'] = offer['planCode']
-        for addon in offer['addonFamilies']:
+for offerIndex, (planCode,data) in enumerate(catalogSorted.items()):
+    if "product" in data['plan'] and offerIndex == int(lookup):
+        planConfig['planCode'] = planCode
+        for addon in data['plan']['addonFamilies']:
             if addon['mandatory'] != True: continue
             for index, option in enumerate(addon['addons']): print(index, option)
             print("Please select configuration")
