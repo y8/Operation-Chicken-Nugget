@@ -36,3 +36,5 @@ Example how config.json should look like by now <br />
 3. Edit nugget.py if you want to, by default no autopay, has to be enabled manually.<br />
 
 4. Profit! <br />
+
+If you like the bot, you can do a small donation via Paypal: neo@tiefkuehler-madness.me
