@@ -138,7 +138,10 @@ while True:
         if response.status_code == 200:
             stock = response.json()
             score = 0
-            if not stock: exit(f"Unable to find {planConfig['planCode']} in availability.")
+            if not stock: 
+                print(f"Unable to find {planConfig['planCode']} in availability.")
+                time.sleep(randint(5,10))
+                continue
             for datacenter in stock[0]['datacenters']:
                 if datacenter['availability'] != "unavailable" and config['anyDatacenter']:
                     availableDataCenter = datacenter['datacenter'] 
