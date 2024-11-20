@@ -18,8 +18,26 @@ for index, option in enumerate(endpoints):
         selectedEndpoint['endpointAPI'] = option
         break
 
+def call(url,payload=None,runs=10):
+    for run in range(runs):
+        try:
+            if payload:
+                response = requests.post(url, headers=headers, data=json.dumps(payload))
+            else:
+                response = requests.get(url, headers=headers)
+            if response.status_code == 200: return response
+            print(f"Got {response.status_code} for {url} retrying...")
+            print(json.dumps(response.json(), indent=4))
+        except Exception as e:
+            print(f"Failed to fetch {url} got error '{e}' retrying...")
+        time.sleep(5)
+    exit(f"Unable to fetch {url}")
+
+headers = {'Accept': 'application/json','X-Ovh-Application':config['application_key'],'X-Ovh-Consumer':config['consumer_key'],
+'Content-Type':'application/json;charset=utf-8','Host':selectedEndpoint['endpointAPI']}
+
 print(f"Loading catalog from {selectedEndpoint['catalog']}")
-response = requests.get(selectedEndpoint['catalog'])
+response = call(selectedEndpoint['catalog'])
 catalog = response.json()
 catalogSorted = {}
 for plan in catalog['plans']:
@@ -73,24 +91,7 @@ def datacenterToRegion(availableDataCenter):
     else:
         return "europe"
 
-def call(url,payload=None,runs=10):
-    for run in range(runs):
-        try:
-            if payload:
-                response = requests.post(url, headers=headers, data=json.dumps(payload))
-            else:
-                response = requests.get(url, headers=headers)
-            if response.status_code == 200: return response
-            print(f"Got {response.status_code} for {url} retrying...")
-            print(json.dumps(response.json(), indent=4))
-        except Exception as e:
-            print(f"Failed to fetch {url} got error '{e}' retrying...")
-        time.sleep(5)
-    exit(f"Unable to fetch {url}")
-
 while True:
-    headers = {'Accept': 'application/json','X-Ovh-Application':config['application_key'],'X-Ovh-Consumer':config['consumer_key'],
-    'Content-Type':'application/json;charset=utf-8','Host':selectedEndpoint['endpointAPI']}
     print("Preparing Package")
     #getting current time
     print("Getting Time")
