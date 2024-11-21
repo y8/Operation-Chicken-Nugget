@@ -1,4 +1,4 @@
-import requests, hashlib, json, time, ovh, os
+import requests, hashlib, json, time, ovh, sys, os
 from datetime import datetime
 from random import randint
 
@@ -198,8 +198,8 @@ while True:
                     if retry > 15: exit()
                     if retry % 4 == 0 and config['switchRegion']:
                         print(f"Switching Region to {datacenterToRegion(availableDataCenter)} and datacenter to {availableDataCenter}") 
-                        config['dedicated_datacenter'] = availableDataCenter
-                        config['region'] = datacenterToRegion(availableDataCenter)
+                        planConfig['datacenter'] = availableDataCenter
+                        planConfig['region'] = datacenterToRegion(availableDataCenter)
                         break
             except Exception as e:
                 print(f"Unable to submit order got '{e}' as error")
