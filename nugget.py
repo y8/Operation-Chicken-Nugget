@@ -21,10 +21,13 @@ if len(sys.argv) == 1:
             selectedEndpoint['endpointAPI'] = option
             break
 else:
-    print(f"Loading {sys.argv[1]}")
-    with open(f"{path}/plans/{sys.argv[1]}") as handle: planConfig = json.loads(handle.read())
-    selectedEndpoint = endpoints[planConfig['endpoint']]
-    selectedEndpoint['endpointAPI'] = planConfig['endpoint']
+    if os.path.isfile(f"{path}/plans/{sys.argv[1]}"):
+        print(f"Loading {sys.argv[1]}")
+        with open(f"{path}/plans/{sys.argv[1]}") as handle: planConfig = json.loads(handle.read())
+        selectedEndpoint = endpoints[planConfig['endpoint']]
+        selectedEndpoint['endpointAPI'] = planConfig['endpoint']
+    else:
+        exit(f"Unable to find file plans/{sys.argv[1]}")
 
 def call(url,payload=None,runs=10):
     for run in range(runs):
