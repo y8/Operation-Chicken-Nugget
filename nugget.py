@@ -50,7 +50,7 @@ headers = {'Accept': 'application/json','X-Ovh-Application':config['application_
 def datacenterToRegion(availableDataCenter):
     if availableDataCenter == "bhs": 
         return "canada"
-    elif availableDataCenter == "vin" or availableDataCenter == "hil"
+    elif availableDataCenter == "vin" or availableDataCenter == "hil":
         return "northamerica"
     else:
         return "europe"
