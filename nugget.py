@@ -1,9 +1,10 @@
-import requests, hashlib, json, time, ovh
+import requests, hashlib, json, time, ovh, os
 from datetime import datetime
 from random import randint
 
 with open('config.json') as f: config = json.load(f)
 with open('endpoints.json') as f: endpoints = json.load(f)
+path = os.path.dirname(os.path.realpath(__file__))
 
 if not "autoPay" in config: exit("autoPay missing in config.")
 if not "switchRegion" in config: exit("switchRegion missing in config.")
@@ -88,9 +89,11 @@ else:
             dc = datacenter['datacenter']
             break
 
-region = datacenterToRegion(dc)
-print(f"Your selected config in {dc}")
+planConfig['region'] = datacenterToRegion(dc)
+planConfig['datacenter'] = dc
+print(f"Your selected config")
 print(planConfig)
+with open(f'{path}/plans/{planConfig['planCode']}-{planConfig['datacenter']}.json', 'w') as f: json.dump(planConfig, f, indent=4)
 time.sleep(2)
 
 # Instantiate. Visit https://api.ovh.com/createToken/?GET=/me
@@ -128,7 +131,7 @@ while True:
     itemID = response.json()['items'][0]
     print(f'Getting current cart {cart.get("cartId")}')
     #set configurations
-    configurations = [{'label':'region','value':region},{'label':'dedicated_datacenter','value':dc},{'label':'dedicated_os','value':'none_64.en'}]
+    configurations = [{'label':'region','value':planConfig['region']},{'label':'dedicated_datacenter','value':planConfig['datacenter']},{'label':'dedicated_os','value':'none_64.en'}]
     for entry in configurations:
         print(f"Setting {entry}")
         call(f"https://{selectedEndpoint['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/item/{itemID}/configuration",entry)
