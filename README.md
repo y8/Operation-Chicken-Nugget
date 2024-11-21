@@ -15,6 +15,7 @@ pip3 install requests ovh
 1. Create an Application<br />
 https://ca.api.ovh.com/createApp/<br />
 https://eu.api.ovh.com/createApp/<br />
+https://api.us.ovhcloud.com/createApp/ (Beta)<br />
 
 2. Put the keys into config.json<br />
 Example how config.json should look like by now <br />
