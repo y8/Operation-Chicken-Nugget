@@ -37,8 +37,8 @@ headers = {'Accept': 'application/json','X-Ovh-Application':config['application_
 'Content-Type':'application/json;charset=utf-8','Host':selectedEndpoint['endpointAPI']}
 
 print(f"Loading catalog from {selectedEndpoint['catalog']}")
-response = call(selectedEndpoint['catalog'])
-catalog = response.json()
+catalogRaw = call(selectedEndpoint['catalog'])
+catalog = catalogRaw.json()
 catalogUnsorted = {}
 for plan in catalog['plans']:
     for price in plan['pricings']:
@@ -67,7 +67,29 @@ for offerIndex, (planCode,data) in enumerate(catalogSorted.items()):
                 if int(selected) == index: planConfig[addon['name']] = option
         break
 
-print("Your selected config is")
+def datacenterToRegion(availableDataCenter):
+    if availableDataCenter == "bhs": 
+        return "canada"
+    else:
+        return "europe"
+
+print("Loading availability...")
+availabilityRaw = call(f'{selectedEndpoint["availability"]}?excludeDatacenters=false&planCode={planConfig["planCode"]}&server={planConfig["planCode"]}')
+availability = availabilityRaw.json()
+if not availability:
+    print(f"Failed to fetch availability, please enter desired datacenter manualy.")
+    dc = input()
+else:
+    for index, datacenter in enumerate(availability[0]['datacenters']):
+        print(index, datacenter['datacenter'])
+    selected = input()
+    for index, datacenter in enumerate(availability[0]['datacenters']):
+        if int(selected) == index: 
+            dc = datacenter['datacenter']
+            break
+
+region = datacenterToRegion(dc)
+print(f"Your selected config in {dc}")
 print(planConfig)
 time.sleep(2)
 
@@ -84,12 +106,6 @@ client = ovh.Client(
 print("Welcome", client.get('/me')['firstname'])
 availableDataCenter = "bhs"
 retry = 0
-
-def datacenterToRegion(availableDataCenter):
-    if availableDataCenter == "bhs": 
-        return "canada"
-    else:
-        return "europe"
 
 while True:
     print("Preparing Package")
@@ -112,7 +128,7 @@ while True:
     itemID = response.json()['items'][0]
     print(f'Getting current cart {cart.get("cartId")}')
     #set configurations
-    configurations = [{'label':'region','value':config['region']},{'label':'dedicated_datacenter','value':config['dedicated_datacenter']},{'label':'dedicated_os','value':'none_64.en'}]
+    configurations = [{'label':'region','value':region},{'label':'dedicated_datacenter','value':dc},{'label':'dedicated_os','value':'none_64.en'}]
     for entry in configurations:
         print(f"Setting {entry}")
         call(f"https://{selectedEndpoint['endpointAPI']}/1.0/order/cart/{cart.get('cartId')}/item/{itemID}/configuration",entry)

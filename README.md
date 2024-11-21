@@ -24,8 +24,6 @@ Example how config.json should look like by now <br />
     "ovhSubsidiary":"CA",
     "application_key":"xxxxxxxxxx",
     "application_secret":"xxxxxxxxxxxxxxxxxx",
-    "dedicated_datacenter":"fr",
-    "region":"europe",
     "consumer_key":"",
     "switchRegion":false,
     "anyDatacenter":false,
