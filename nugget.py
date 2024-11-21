@@ -44,6 +44,12 @@ def call(url,payload=None,runs=10):
 headers = {'Accept': 'application/json','X-Ovh-Application':config['application_key'],'X-Ovh-Consumer':config['consumer_key'],
 'Content-Type':'application/json;charset=utf-8','Host':selectedEndpoint['endpointAPI']}
 
+def datacenterToRegion(availableDataCenter):
+    if availableDataCenter == "bhs": 
+        return "canada"
+    else:
+        return "europe"
+
 if len(sys.argv) == 1:
     print(f"Loading catalog from {selectedEndpoint['catalog']}")
     catalogRaw = call(selectedEndpoint['catalog'])
@@ -74,12 +80,6 @@ if len(sys.argv) == 1:
                 for index, option in enumerate(addon['addons']):
                     if int(selected) == index: planConfig[addon['name']] = option
             break
-
-    def datacenterToRegion(availableDataCenter):
-        if availableDataCenter == "bhs": 
-            return "canada"
-        else:
-            return "europe"
 
     print("Loading availability...")
     availabilityRaw = call(f'{selectedEndpoint["availability"]}?excludeDatacenters=false&planCode={planConfig["planCode"]}&server={planConfig["planCode"]}')
