@@ -101,7 +101,7 @@ if len(sys.argv) == 1:
     planConfig['endpoint'] = selectedEndpoint['endpointAPI']
 print(f"Your selected config")
 print(planConfig)
-with open(f'{path}/plans/{planConfig['planCode']}-{planConfig['datacenter']}.json', 'w') as f: json.dump(planConfig, f, indent=4)
+with open(f"{path}/plans/{planConfig['planCode']}-{planConfig['datacenter']}.json", 'w') as f: json.dump(planConfig, f, indent=4)
 time.sleep(2)
 
 # Instantiate. Visit https://api.ovh.com/createToken/?GET=/me
