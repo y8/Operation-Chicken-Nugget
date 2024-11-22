@@ -172,15 +172,17 @@ while True:
                 print(f"Unable to find {planConfig['planCode']} in availability.")
                 time.sleep(randint(5,10))
                 continue
-            for datacenter in stock[0]['datacenters']:
-                if datacenter['availability'] != "unavailable" and config['anyDatacenter']:
-                    availableDataCenter = datacenter['datacenter'] 
-                    score = score +1
-                    break
-                elif datacenter['availability'] != "unavailable" and datacenter['datacenter'] in planConfig['datacenter']:
-                    availableDataCenter = datacenter['datacenter'] 
-                    score = score +1
-                    break
+            for configuration in stock:
+                if configuration['memory'] != planConfig['memory'].replace(f"-{planConfig['planCode']}","") or configuration['storage'] != planConfig['storage'].replace(f"-{planConfig['planCode']}",""): continue
+                for datacenter in configuration['datacenters']:
+                    if datacenter['availability'] != "unavailable" and config['anyDatacenter']:
+                        availableDataCenter = datacenter['datacenter'] 
+                        score = score +1
+                        break
+                    elif datacenter['availability'] != "unavailable" and datacenter['datacenter'] in planConfig['datacenter']:
+                        availableDataCenter = datacenter['datacenter'] 
+                        score = score +1
+                        break
         else:
             time.sleep(randint(5,10))
             continue
