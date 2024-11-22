@@ -1,11 +1,19 @@
 import json, ovh
 
-with open('config.json') as f:
-    config = json.load(f)
+with open('config.json') as f: config = json.load(f)
+with open('endpoints.json') as f: endpoints = json.load(f)
+
+print("Please select the endpoint for the catalog")
+for index, option in enumerate(endpoints): print(index, option)
+selected = input("Endpoint: ")
+for index, option in enumerate(endpoints):
+    if int(selected) == index: 
+        selectedEndpoint = endpoints[option]['endpoint']
+        break
 
 # create a client using configuration
 client = ovh.Client(
-    endpoint=config['endpoint'],
+    endpoint=selectedEndpoint,
     application_key=config['application_key'],
     application_secret=config['application_secret']
 )
