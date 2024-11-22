@@ -3,7 +3,6 @@
     "application_key":"",
     "application_secret":"",
     "consumer_key":"",
-    "switchRegion":false,
     "anyDatacenter":false,
     "autoPay":false
 }

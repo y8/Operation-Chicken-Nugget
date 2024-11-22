@@ -26,7 +26,6 @@ Example how config.json should look like by now <br />
     "application_key":"xxxxxxxxxx",
     "application_secret":"xxxxxxxxxxxxxxxxxx",
     "consumer_key":"",
-    "switchRegion":false,
     "anyDatacenter":false,
     "autoPay":false
 }

@@ -7,7 +7,6 @@ with open('endpoints.json') as f: endpoints = json.load(f)
 path = os.path.dirname(os.path.realpath(__file__))
 
 if not "autoPay" in config: exit("autoPay missing in config.")
-if not "switchRegion" in config: exit("switchRegion missing in config.")
 if not "anyDatacenter" in config: exit("anyDatacenter missing in config.")
 
 if len(sys.argv) == 1:
@@ -209,7 +208,7 @@ while True:
                     print(json.dumps(response.json(), indent=4))
                     retry += 1
                     if retry > 15: exit()
-                    if retry % 4 == 0 and config['switchRegion']:
+                    if retry % 4 == 0 and config['anyDatacenter']:
                         print(f"Switching Region to {datacenterToRegion(availableDataCenter)} and datacenter to {availableDataCenter}") 
                         planConfig['datacenter'] = availableDataCenter
                         planConfig['region'] = datacenterToRegion(availableDataCenter)
