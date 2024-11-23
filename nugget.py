@@ -103,7 +103,7 @@ if len(sys.argv) == 1:
     planConfig['endpoint'] = selectedEndpoint['endpointAPI']
 print(f"Your selected config")
 print(planConfig)
-filename = f"{path}/plans/{planConfig['planCode']}-{planConfig['datacenter']}.json"
+filename = f"{path}/plans/{planConfig['planCode']}-{planConfig['memory']}-{planConfig['datacenter']}.json"
 with open(filename, 'w') as f: json.dump(planConfig, f, indent=4)
 print(f"Saved as {filename}")
 time.sleep(2)
