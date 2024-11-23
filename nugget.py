@@ -175,7 +175,7 @@ while True:
                 time.sleep(randint(5,10))
                 continue
             for configuration in stock:
-                if configuration['memory'] != planConfig['memory'].replace(f"-{planConfig['planCode']}","") or configuration['storage'] != planConfig['storage'].replace(f"-{planConfig['planCode']}",""): continue
+                if not configuration['memory'] in planConfig['memory'] or not configuration['storage'] in planConfig['storage']: continue
                 for datacenter in configuration['datacenters']:
                     if datacenter['availability'] != "unavailable" and config['anyDatacenter']:
                         availableDataCenter = datacenter['datacenter'] 
