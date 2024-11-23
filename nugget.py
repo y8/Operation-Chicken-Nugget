@@ -103,7 +103,9 @@ if len(sys.argv) == 1:
     planConfig['endpoint'] = selectedEndpoint['endpointAPI']
 print(f"Your selected config")
 print(planConfig)
-with open(f"{path}/plans/{planConfig['planCode']}-{planConfig['datacenter']}.json", 'w') as f: json.dump(planConfig, f, indent=4)
+filename = f"{path}/plans/{planConfig['planCode']}-{planConfig['memory']}-{planConfig['datacenter']}.json"
+with open(filename, 'w') as f: json.dump(planConfig, f, indent=4)
+print(f"Saved as {filename}")
 time.sleep(2)
 
 # Instantiate. Visit https://api.ovh.com/createToken/?GET=/me
@@ -173,7 +175,7 @@ while True:
                 time.sleep(randint(5,10))
                 continue
             for configuration in stock:
-                if configuration['memory'] != planConfig['memory'].replace(f"-{planConfig['planCode']}","") or configuration['storage'] != planConfig['storage'].replace(f"-{planConfig['planCode']}",""): continue
+                if not configuration['memory'] in planConfig['memory'] or not configuration['storage'] in planConfig['storage']: continue
                 for datacenter in configuration['datacenters']:
                     if datacenter['availability'] != "unavailable" and config['anyDatacenter']:
                         availableDataCenter = datacenter['datacenter'] 
