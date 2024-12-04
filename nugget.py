@@ -177,11 +177,11 @@ while True:
             for configuration in stock:
                 if not configuration['memory'] in planConfig['memory'] or not configuration['storage'] in planConfig['storage']: continue
                 for datacenter in configuration['datacenters']:
-                    if datacenter['availability'] != "unavailable" and config['anyDatacenter']:
+                    if datacenter['availability'] != "unavailable" and datacenter['availability'] != "comingSoon" and config['anyDatacenter']:
                         availableDataCenter = datacenter['datacenter'] 
                         score = score +1
                         break
-                    elif datacenter['availability'] != "unavailable" and datacenter['datacenter'] in planConfig['datacenter']:
+                    elif datacenter['availability'] != "unavailable" and datacenter['availability'] != "comingSoon" and datacenter['datacenter'] in planConfig['datacenter']:
                         availableDataCenter = datacenter['datacenter'] 
                         score = score +1
                         break
